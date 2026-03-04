@@ -117,7 +117,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     "X-OpenRouter-Title": process.env.OPENROUTER_APP_NAME || "My App",
   },
   body: JSON.stringify({
-    model: "openai/gpt-image-1",
+    model: "google/gemini-3.1-flash-image-preview",
     messages: [
       {
         role: "user",
@@ -211,6 +211,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Send text-only prompts as normal chat `messages`.
    - Send images with `content` arrays containing a `text` part and one or more `image_url` parts.
    - Generate images by sending normal chat `messages` plus `modalities` that include `image`; pass `image_config` when output settings matter.
+   - Choose image-output models from the live catalog by checking `architecture.output_modalities` for `image`.
    - Send PDFs with a `file` content part and, when needed, the `file-parser` plugin.
    - Use public URLs for public assets and data URLs for local or private files.
    - Keep `tools` in every tool-calling request, including follow-up calls that only send tool results.

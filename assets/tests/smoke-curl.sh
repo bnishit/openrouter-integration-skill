@@ -109,7 +109,7 @@ case "$CASE" in
     payload=$(json_with_replacements "$FIXTURES_DIR/image-chat.template.json" "__MODEL__=$MODEL" "__IMAGE_DATA_URL__=$image_data_url")
     ;;
   image-generation)
-    MODEL=${MODEL:-openai/gpt-image-1}
+    MODEL=${MODEL:-google/gemini-3.1-flash-image-preview}
     payload=$(json_with_replacements "$FIXTURES_DIR/image-generation.json" "__MODEL__=$MODEL")
     ;;
   pdf)

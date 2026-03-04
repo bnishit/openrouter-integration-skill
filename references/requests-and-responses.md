@@ -58,11 +58,11 @@ Use a public URL instead of a data URL when the image is already publicly access
 
 ## Image Generation Request
 
-For image generation, keep using the chat completions endpoint but request image output explicitly with `modalities`. Many image-capable models also accept `image_config` for output settings such as size.
+For image generation, keep using the chat completions endpoint but request image output explicitly with `modalities`. Many image-capable models also accept `image_config` for output settings such as size. Pick a current image-output model from the live catalog by checking `architecture.output_modalities` for `image`.
 
 ```json
 {
-  "model": "openai/gpt-image-1",
+  "model": "google/gemini-3.1-flash-image-preview",
   "messages": [
     {
       "role": "user",
@@ -76,7 +76,7 @@ For image generation, keep using the chat completions endpoint but request image
 }
 ```
 
-Keep `messages` in the normal OpenAI-compatible format. The key difference is that image-output requests should advertise the desired output modality instead of assuming text-only output.
+Keep `messages` in the normal OpenAI-compatible format. The key difference is that image-output requests should advertise the desired output modality instead of assuming text-only output. As of March 4, 2026, `google/gemini-3.1-flash-image-preview` is a working catalog entry with `output_modalities` that include `image`.
 
 ## PDF Request
 
