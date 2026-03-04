@@ -17,7 +17,7 @@ It packages a reusable `SKILL.md`, agent metadata, implementation references, st
 Clone this repository into your Codex skills directory using the installed skill name:
 
 ```bash
-git clone https://github.com/<owner>/openrouter-integration-skill.git \
+git clone https://github.com/bnishit/openrouter-integration-skill.git \
   ~/.codex/skills/openrouter-integration
 ```
 
