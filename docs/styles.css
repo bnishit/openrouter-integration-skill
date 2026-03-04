@@ -226,7 +226,9 @@ li {
 
 .install-grid,
 .capability-grid,
-.use-case-grid {
+.use-case-grid,
+.principle-grid,
+.chat-scenarios {
   display: grid;
   gap: 16px;
 }
@@ -236,13 +238,20 @@ li {
 }
 
 .capability-grid,
-.use-case-grid {
+.use-case-grid,
+.principle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chat-scenarios {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .install-card,
 .capability-card,
-.use-case-card {
+.use-case-card,
+.principle-card,
+.chat-card {
   padding: 20px;
   border-radius: 24px;
   border: 1px solid var(--line);
@@ -269,10 +278,97 @@ code {
   margin: 18px 0 0;
 }
 
+.principle-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.principle-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -40px -40px auto;
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(79, 209, 197, 0.18), transparent 68%);
+  pointer-events: none;
+}
+
+.principle-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  background: rgba(255, 178, 77, 0.16);
+  border: 1px solid rgba(255, 178, 77, 0.26);
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.principle-card p,
+.chat-card p,
+.chat-takeaway {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .narrative-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
+}
+
+.chat-card {
+  display: grid;
+  gap: 14px;
+  background:
+    linear-gradient(180deg, rgba(91, 140, 255, 0.05), transparent 100%),
+    var(--panel);
+}
+
+.chat-meta {
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.chat-bubble {
+  padding: 14px 16px;
+  border-radius: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.chat-bubble strong {
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.chat-bubble.user {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.chat-bubble.agent {
+  background:
+    linear-gradient(180deg, rgba(79, 209, 197, 0.12), rgba(79, 209, 197, 0.04)),
+    rgba(12, 25, 43, 0.82);
+  border: 1px solid rgba(79, 209, 197, 0.18);
+}
+
+.chat-takeaway {
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-size: 0.98rem;
 }
 
 .faq-list {
@@ -321,6 +417,8 @@ a {
   .install-grid,
   .capability-grid,
   .use-case-grid,
+  .principle-grid,
+  .chat-scenarios,
   .narrative-grid {
     grid-template-columns: 1fr;
   }
