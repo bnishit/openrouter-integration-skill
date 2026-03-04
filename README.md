@@ -1,6 +1,6 @@
 # OpenRouter Skill
 
-OpenRouter Skill is an installable agent skill for AI agents that need reliable OpenRouter integration patterns: model discovery, multimodal chat, tool calling, structured output, routing, and starter templates.
+OpenRouter Skill is an installable agent skill for AI agents that need reliable OpenRouter integration patterns: model discovery, provider discovery, free-model filtering, generation cost lookup, multimodal chat, tool calling, structured output, routing, and starter templates.
 
 Landing page: `https://bnishit.github.io/openrouter-skill/`
 
@@ -28,6 +28,9 @@ git clone https://github.com/bnishit/openrouter-skill.git \
 ## What It Covers
 
 - model discovery and searchable model pickers
+- provider discovery and provider-aware routing
+- free-model filtering from the live catalog
+- generation cost lookup and post-hoc billing inspection
 - chat completions and streaming
 - structured JSON responses
 - multimodal requests with images and PDFs
@@ -38,6 +41,8 @@ git clone https://github.com/bnishit/openrouter-skill.git \
 ## Example Prompts
 
 - `Use $openrouter-integration to add an OpenRouter model picker to this app.`
+- `Use $openrouter-integration to add provider and free-model filters to this OpenRouter model catalog.`
+- `Use $openrouter-integration to fetch a completed OpenRouter generation and show its exact cost.`
 - `Use $openrouter-integration to add image and PDF chat support through an OpenRouter server route.`
 - `Use $openrouter-integration to wire tool calling and provider fallback handling into this project.`
 

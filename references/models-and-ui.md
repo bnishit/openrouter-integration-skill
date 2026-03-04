@@ -4,6 +4,7 @@
 
 - `GET https://openrouter.ai/api/v1/models`: full model catalog.
 - `GET https://openrouter.ai/api/v1/models/user`: catalog filtered by the caller's provider preferences, privacy settings, and guardrails.
+- `GET https://openrouter.ai/api/v1/providers`: provider catalog for provider pickers and routing-aware UX.
 - `GET https://openrouter.ai/api/v1/models/:author/:slug/endpoints`: provider and endpoint data for one specific model.
 - Prefer calling these from your server, not directly from the browser.
 
@@ -34,6 +35,8 @@ For each model, keep these fields in your UI shape:
 - `pricing`: keep raw strings and convert only when displaying math.
 - `top_provider`: useful for provider-specific context or completion limits.
 
+For exact generation-level billing data, use `GET /api/v1/generation?id=...` instead of trying to estimate from catalog pricing alone.
+
 ## Filtering Guidance
 
 Use this order:
@@ -50,6 +53,7 @@ Examples:
 - Structured JSON: prefer models advertising `structured_outputs` or `response_format`.
 - Tool calling: require `tools` in `supported_parameters`.
 - Price- or throughput-sensitive routes: use the endpoints list for the chosen model before hard-coding a provider strategy.
+- Free-model pickers: filter catalog entries whose relevant pricing fields are zero-valued strings.
 
 ## Normalized UI Shape
 
@@ -85,6 +89,7 @@ type UiModel = {
 - For large lists, use a searchable popover, combobox, or modal list instead of a native select.
 - Show selected models as removable tags or chips.
 - When the app depends on a specific feature, show a badge for it, for example `Vision`, `Files`, `Structured JSON`, `Streaming`, or `Tools`.
+- When providers matter separately from models, fetch `/api/v1/providers` and show provider badges or filters directly from the API response.
 
 ## Failure Modes
 

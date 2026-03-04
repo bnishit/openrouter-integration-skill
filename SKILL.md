@@ -1,6 +1,6 @@
 ---
 name: "openrouter-integration"
-description: "Integrate apps with OpenRouter's OpenAI-compatible API, including model discovery, chat completions, structured JSON responses, multimodal inputs such as images and PDFs, tool and function calling, shared parsing helpers, test fixtures, streaming chat UI examples, and routing or fallback policies across models and providers. Use when an agent needs to add or debug OpenRouter usage, build a model picker, proxy `/api/v1/models` or `/api/v1/models/user`, send image or PDF content to `/api/v1/chat/completions`, parse OpenRouter responses, add Next.js or Express server routes, validate structured outputs, run smoke tests, verify current docs against OpenRouter before coding, or wire model or provider fallbacks into a server or UI."
+description: "Integrate apps with OpenRouter's OpenAI-compatible API, including model discovery, provider discovery, free-model filtering, chat completions, generation cost lookup, structured JSON responses, multimodal inputs such as images and PDFs, tool and function calling, shared parsing helpers, test fixtures, streaming chat UI examples, and routing or fallback policies across models and providers. Use when an agent needs to add or debug OpenRouter usage, build a model picker, proxy `/api/v1/models`, `/api/v1/models/user`, `/api/v1/providers`, or `/api/v1/generation`, send image or PDF content to `/api/v1/chat/completions`, parse OpenRouter responses, inspect generation cost after the fact, add Next.js or Express server routes, validate structured outputs, run smoke tests, verify current docs against OpenRouter before coding, or wire model or provider fallbacks into a server or UI."
 ---
 
 # OpenRouter Skill
@@ -17,6 +17,42 @@ Use these for fast copy-paste before reaching for the fuller references or templ
 curl -s https://openrouter.ai/api/v1/models \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" \
   -H "Accept: application/json"
+```
+
+### Curl: list providers
+
+```bash
+curl -s https://openrouter.ai/api/v1/providers \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Accept: application/json"
+```
+
+### Curl: fetch one generation and its cost
+
+```bash
+curl -s "https://openrouter.ai/api/v1/generation?id=$GENERATION_ID" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Accept: application/json"
+```
+
+### Fetch: free models from the catalog
+
+```ts
+const res = await fetch("https://openrouter.ai/api/v1/models", {
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    Accept: "application/json",
+  },
+});
+
+const json = await res.json();
+const freeModels = (json?.data ?? []).filter((model: any) => {
+  const pricing = model?.pricing ?? {};
+  return ["prompt", "completion", "request", "image"].every((key) => {
+    const value = pricing[key];
+    return value == null || value === "0";
+  });
+});
 ```
 
 ### Curl: text-only chat call
@@ -127,6 +163,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Copy shared helpers, streaming UI example, and test fixtures with the template.
 
 4. Decide what you are integrating.
+   - Catalog, providers, free-model filters, or generation cost lookup: read `references/catalogs-and-costs.md`.
    - Model catalog or picker: read `references/models-and-ui.md`.
    - Text, image, or PDF inference: read `references/requests-and-responses.md`.
    - Tool calling or an agentic loop: read `references/tools-and-function-calling.md`.
@@ -136,7 +173,9 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 5. Discover models before choosing one.
    - Use `GET /api/v1/models` for the full catalog.
    - Use `GET /api/v1/models/user` when user or provider preferences matter.
+   - Use `GET /api/v1/providers` when provider routing, privacy, or availability matter in the UI.
    - Use `GET /api/v1/models/:author/:slug/endpoints` when you need endpoint-level provider data.
+   - Derive free-model lists by filtering zero-priced entries from the model catalog.
    - Store model `id`, not model `name`.
    - Filter by `architecture.input_modalities` first; use name heuristics only as fallback.
 
@@ -163,7 +202,8 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 9. Verify the integration.
    - Run `assets/tests/smoke-curl.sh` for text, structured JSON, tools, image, and PDF cases.
    - Check both successful responses and non-2xx OpenRouter errors.
-   - Log returned `usage`, `cost`, finish reason, and resolved model id for debugging.
+   - Log returned `usage`, `cost`, finish reason, resolved model id, and generation id for debugging.
+   - Fetch `GET /api/v1/generation?id=...` when exact post-hoc cost or token accounting matters.
 
 ## Resources
 
@@ -173,6 +213,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 - Express starter: `assets/express-template/`
 - Shared TypeScript helpers: `assets/shared/`
 - Smoke tests and fixtures: `assets/tests/`
+- Catalogs, providers, free-model filters, and generation cost lookup: `references/catalogs-and-costs.md`
 
 ## Quality Rules
 
@@ -180,6 +221,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 - Keep model picker UIs searchable; plain `<select>` breaks down on large catalogs.
 - Use `architecture.input_modalities` and `architecture.output_modalities` as the primary capability signals.
 - Treat pricing fields as strings from the API; convert explicitly if you need numeric math.
+- Persist generation ids anywhere later cost inspection matters.
 - Include the organization prefix in model ids such as `openai/gpt-4o-mini`.
 - Expect `choices` to always be an array.
 - For streaming, expect SSE comment lines and ignore them.
@@ -190,6 +232,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 ## References
 
 - Model discovery, caching, and picker UX: `references/models-and-ui.md`
+- Catalogs, providers, free-model filters, and generation cost lookup: `references/catalogs-and-costs.md`
 - Text, image, and PDF request patterns plus response handling: `references/requests-and-responses.md`
 - Tool calling and agentic loops: `references/tools-and-function-calling.md`
 - Model routing, provider routing, and fallbacks: `references/routing-and-fallbacks.md`

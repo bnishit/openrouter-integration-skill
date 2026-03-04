@@ -202,6 +202,29 @@ Non-streaming responses are normalized around:
 }
 ```
 
+Save the top-level `id` when the app needs later audit, billing, or support lookup. That id is what `/api/v1/generation` expects.
+
+## Generation Lookup And Cost Audit
+
+Use the original completion response for immediate UX, then use the generation endpoint for exact post-hoc accounting:
+
+```bash
+curl -s "https://openrouter.ai/api/v1/generation?id=$GENERATION_ID" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "Accept: application/json"
+```
+
+Typical fields worth logging when available:
+
+- `total_cost`
+- `tokens_prompt`
+- `tokens_completion`
+- `native_tokens_prompt`
+- `native_tokens_completion`
+- `provider_name`
+- `upstream_id`
+- `created_at`
+
 ## Parsing Rules
 
 - Read `choices[0]` first, but do not assume only one choice exists.
@@ -211,6 +234,7 @@ Non-streaming responses are normalized around:
 - Ignore SSE comment frames when streaming.
 - Check `finish_reason` and `native_finish_reason` when diagnosing truncation or provider behavior.
 - Log `usage`, including `cost`, for observability.
+- Persist the generation `id` if exact later cost lookup matters.
 - Handle provider errors from non-2xx responses and also from streamed or embedded error objects when present.
 
 ## Common Integration Choices
