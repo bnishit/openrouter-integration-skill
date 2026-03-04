@@ -22,7 +22,7 @@ Direct git clone:
 git clone https://github.com/bnishit/openrouter-skill.git
 ```
 
-The trigger name is `openrouter-skill`. The installed skill trigger remains `openrouter-integration` for compatibility with existing prompts and local setups.
+The package/repo name is `openrouter-skill`. The installed skill trigger is `openrouter-integration`.
 
 ## Why This Exists
 

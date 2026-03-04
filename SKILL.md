@@ -3,7 +3,7 @@ name: "openrouter-integration"
 description: "Integrate apps with OpenRouter's OpenAI-compatible API, including model discovery, provider discovery, free-model filtering, chat completions, image generation, generation cost lookup, structured JSON responses, multimodal inputs such as images and PDFs, tool and function calling, shared parsing helpers, test fixtures, best-practice playbooks, streaming chat UI examples, and routing or fallback policies across models and providers. Use when an agent needs to add or debug OpenRouter usage, build a model picker, proxy `/api/v1/models`, `/api/v1/models/user`, `/api/v1/providers`, or `/api/v1/generation`, send image or PDF content to `/api/v1/chat/completions`, generate images through OpenRouter, build icon or OG image flows, parse OpenRouter responses, inspect generation cost after the fact, add Next.js or Express server routes, validate structured outputs, run smoke tests, verify current docs against OpenRouter before coding, or wire model or provider fallbacks into a server or UI."
 ---
 
-# OpenRouter Skill
+# OpenRouter Integration
 
 Use official OpenRouter docs as the source of truth for current endpoints, parameters, and capability metadata. Prefer `openrouter.ai/docs`, `openrouter.ai/openapi.json`, and the API reference pages under `openrouter.ai/docs/api-reference`.
 
