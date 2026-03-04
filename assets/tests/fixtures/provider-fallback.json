@@ -1,0 +1,14 @@
+{
+  "model": "__PRIMARY_MODEL__",
+  "models": [
+    "google/gemini-2.5-flash",
+    "anthropic/claude-3.5-haiku"
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": "Reply with the word routed and nothing else."
+    }
+  ],
+  "temperature": 0
+}

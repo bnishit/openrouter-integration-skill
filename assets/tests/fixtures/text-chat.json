@@ -1,0 +1,10 @@
+{
+  "model": "__MODEL__",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Reply with the word ok and nothing else."
+    }
+  ],
+  "temperature": 0
+}

@@ -1,0 +1,33 @@
+{
+  "model": "__MODEL__",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Extract the document title and total amount as JSON if present."
+        },
+        {
+          "type": "file",
+          "file": {
+            "filename": "document.pdf",
+            "file_data": "__PDF_DATA_URL__"
+          }
+        }
+      ]
+    }
+  ],
+  "plugins": [
+    {
+      "id": "file-parser",
+      "pdf": {
+        "engine": "pdf-text"
+      }
+    }
+  ],
+  "response_format": {
+    "type": "json_object"
+  },
+  "temperature": 0
+}

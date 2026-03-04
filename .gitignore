@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+node_modules/

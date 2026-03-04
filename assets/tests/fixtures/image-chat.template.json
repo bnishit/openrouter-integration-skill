@@ -1,0 +1,21 @@
+{
+  "model": "__MODEL__",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Describe the main visible content in one sentence."
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "__IMAGE_DATA_URL__"
+          }
+        }
+      ]
+    }
+  ],
+  "temperature": 0
+}

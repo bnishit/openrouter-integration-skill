@@ -1,0 +1,13 @@
+{
+  "model": "__MODEL__",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Return JSON with keys invoice_number and total. Use invoice_number INV-001 and total 123.45."
+    }
+  ],
+  "response_format": {
+    "type": "json_object"
+  },
+  "temperature": 0
+}

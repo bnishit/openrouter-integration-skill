@@ -1,0 +1,47 @@
+{
+  "model": "__MODEL__",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Use the add_numbers tool to add 2 and 3, then summarize the result."
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_example",
+          "type": "function",
+          "function": {
+            "name": "add_numbers",
+            "arguments": "{\"a\":2,\"b\":3}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_example",
+      "content": "{\"sum\":5}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "add_numbers",
+        "description": "Add two integers",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "a": { "type": "integer" },
+            "b": { "type": "integer" }
+          },
+          "required": ["a", "b"],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "temperature": 0
+}

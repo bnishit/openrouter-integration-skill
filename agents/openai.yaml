@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenRouter Integration"
+  short_description: "OpenRouter models, chat, and multimodal API"
+  default_prompt: "Use $openrouter-integration to add OpenRouter model discovery, chat completions, and image/PDF handling to this project."
