@@ -206,6 +206,8 @@ openrouterRouter.post("/chat", async (req, res) => {
       model = "openai/gpt-4o-mini",
       models,
       messages,
+      modalities,
+      image_config,
       response_format,
       provider,
       plugins,
@@ -213,6 +215,7 @@ openrouterRouter.post("/chat", async (req, res) => {
       tool_choice,
       parallel_tool_calls,
       temperature = 0,
+      max_tokens,
       stream = false,
     } = req.body || {};
 
@@ -224,12 +227,15 @@ openrouterRouter.post("/chat", async (req, res) => {
       model,
       ...(Array.isArray(models) && models.length ? { models } : {}),
       messages,
+      ...(Array.isArray(modalities) && modalities.length ? { modalities } : {}),
+      ...(image_config ? { image_config } : {}),
       ...(response_format ? { response_format } : {}),
       ...(provider ? { provider } : {}),
       ...(plugins ? { plugins } : {}),
       ...(tools ? { tools } : {}),
       ...(tool_choice ? { tool_choice } : {}),
       ...(typeof parallel_tool_calls === "boolean" ? { parallel_tool_calls } : {}),
+      ...(typeof max_tokens === "number" ? { max_tokens } : {}),
       temperature,
       stream,
     };
@@ -263,6 +269,7 @@ openrouterRouter.post("/chat", async (req, res) => {
       model: json.model,
       choices: json.choices || [],
       usage: json.usage || null,
+      data: json.data || null,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

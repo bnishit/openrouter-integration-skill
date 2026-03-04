@@ -6,6 +6,8 @@ type ProxyBody = {
   model?: string;
   models?: string[];
   messages?: unknown[];
+  modalities?: string[];
+  image_config?: unknown;
   response_format?: unknown;
   provider?: unknown;
   plugins?: unknown;
@@ -13,6 +15,7 @@ type ProxyBody = {
   tool_choice?: unknown;
   parallel_tool_calls?: boolean;
   temperature?: number;
+  max_tokens?: number;
   stream?: boolean;
 };
 
@@ -32,6 +35,8 @@ export async function POST(req: NextRequest) {
       model: body.model || "openai/gpt-4o-mini",
       ...(body.models?.length ? { models: body.models } : {}),
       messages: body.messages,
+      ...(body.modalities?.length ? { modalities: body.modalities } : {}),
+      ...(body.image_config ? { image_config: body.image_config } : {}),
       ...(body.response_format ? { response_format: body.response_format } : {}),
       ...(body.provider ? { provider: body.provider } : {}),
       ...(body.plugins ? { plugins: body.plugins } : {}),
@@ -40,6 +45,7 @@ export async function POST(req: NextRequest) {
       ...(typeof body.parallel_tool_calls === "boolean"
         ? { parallel_tool_calls: body.parallel_tool_calls }
         : {}),
+      ...(typeof body.max_tokens === "number" ? { max_tokens: body.max_tokens } : {}),
       temperature: body.temperature ?? 0,
       stream: body.stream ?? false,
     };
@@ -87,6 +93,7 @@ export async function POST(req: NextRequest) {
       model: json.model,
       choices: json.choices || [],
       usage: json.usage || null,
+      data: json.data || null,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

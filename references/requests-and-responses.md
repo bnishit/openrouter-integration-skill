@@ -56,6 +56,28 @@ For image analysis, send a user message with a content array. Put the text part 
 
 Use a public URL instead of a data URL when the image is already publicly accessible.
 
+## Image Generation Request
+
+For image generation, keep using the chat completions endpoint but request image output explicitly with `modalities`. Many image-capable models also accept `image_config` for output settings such as size.
+
+```json
+{
+  "model": "openai/gpt-image-1",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Generate a clean product illustration of a glass teacup on a plain background."
+    }
+  ],
+  "modalities": ["image", "text"],
+  "image_config": {
+    "size": "1024x1024"
+  }
+}
+```
+
+Keep `messages` in the normal OpenAI-compatible format. The key difference is that image-output requests should advertise the desired output modality instead of assuming text-only output.
+
 ## PDF Request
 
 For PDFs, use a `file` content part. The file may be a public URL or a data URL.
@@ -204,6 +226,8 @@ Non-streaming responses are normalized around:
 
 Save the top-level `id` when the app needs later audit, billing, or support lookup. That id is what `/api/v1/generation` expects.
 
+For image-generation responses, the first assistant message may also include an `images` array. Expect image URLs on `choices[0].message.images[*].image_url.url` when the provider returns generated assets inline with the completion.
+
 ## Generation Lookup And Cost Audit
 
 Use the original completion response for immediate UX, then use the generation endpoint for exact post-hoc accounting:
@@ -229,8 +253,9 @@ Typical fields worth logging when available:
 
 - Read `choices[0]` first, but do not assume only one choice exists.
 - For non-streaming responses, read `choices[0].message.content`.
+- For image generation, also inspect `choices[0].message.images` for generated assets.
 - Some providers or SDK layers may return `message.content` as arrays of typed chunks; flatten them if needed.
-- For streaming responses, accumulate `choices[0].delta.content` across chunks.
+- For streaming responses, accumulate `choices[0].delta.content` across chunks and watch for `choices[0].delta.images` on image-capable models.
 - Ignore SSE comment frames when streaming.
 - Check `finish_reason` and `native_finish_reason` when diagnosing truncation or provider behavior.
 - Log `usage`, including `cost`, for observability.

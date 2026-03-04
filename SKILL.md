@@ -1,6 +1,6 @@
 ---
 name: "openrouter-integration"
-description: "Integrate apps with OpenRouter's OpenAI-compatible API, including model discovery, provider discovery, free-model filtering, chat completions, generation cost lookup, structured JSON responses, multimodal inputs such as images and PDFs, tool and function calling, shared parsing helpers, test fixtures, streaming chat UI examples, and routing or fallback policies across models and providers. Use when an agent needs to add or debug OpenRouter usage, build a model picker, proxy `/api/v1/models`, `/api/v1/models/user`, `/api/v1/providers`, or `/api/v1/generation`, send image or PDF content to `/api/v1/chat/completions`, parse OpenRouter responses, inspect generation cost after the fact, add Next.js or Express server routes, validate structured outputs, run smoke tests, verify current docs against OpenRouter before coding, or wire model or provider fallbacks into a server or UI."
+description: "Integrate apps with OpenRouter's OpenAI-compatible API, including model discovery, provider discovery, free-model filtering, chat completions, image generation, generation cost lookup, structured JSON responses, multimodal inputs such as images and PDFs, tool and function calling, shared parsing helpers, test fixtures, streaming chat UI examples, and routing or fallback policies across models and providers. Use when an agent needs to add or debug OpenRouter usage, build a model picker, proxy `/api/v1/models`, `/api/v1/models/user`, `/api/v1/providers`, or `/api/v1/generation`, send image or PDF content to `/api/v1/chat/completions`, generate images through OpenRouter, parse OpenRouter responses, inspect generation cost after the fact, add Next.js or Express server routes, validate structured outputs, run smoke tests, verify current docs against OpenRouter before coding, or wire model or provider fallbacks into a server or UI."
 ---
 
 # OpenRouter Skill
@@ -105,6 +105,34 @@ const json = await res.json();
 const content = json?.choices?.[0]?.message?.content;
 ```
 
+### Fetch: image generation
+
+```ts
+const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+    "Content-Type": "application/json",
+    "HTTP-Referer": process.env.OPENROUTER_SITE_URL || "http://localhost:3000",
+    "X-OpenRouter-Title": process.env.OPENROUTER_APP_NAME || "My App",
+  },
+  body: JSON.stringify({
+    model: "openai/gpt-image-1",
+    messages: [
+      {
+        role: "user",
+        content: "Generate a clean product-style illustration of a glass teacup on a plain background.",
+      },
+    ],
+    modalities: ["image", "text"],
+    image_config: { size: "1024x1024" },
+  }),
+});
+
+const json = await res.json();
+const imageUrl = json?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+```
+
 ### Fetch: PDF input with file-parser
 
 ```ts
@@ -165,7 +193,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 4. Decide what you are integrating.
    - Catalog, providers, free-model filters, or generation cost lookup: read `references/catalogs-and-costs.md`.
    - Model catalog or picker: read `references/models-and-ui.md`.
-   - Text, image, or PDF inference: read `references/requests-and-responses.md`.
+   - Text, image analysis, image generation, or PDF inference: read `references/requests-and-responses.md`.
    - Tool calling or an agentic loop: read `references/tools-and-function-calling.md`.
    - Routing and failover policy: read `references/routing-and-fallbacks.md`.
    - Common failures: read `references/troubleshooting.md`.
@@ -177,20 +205,22 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Use `GET /api/v1/models/:author/:slug/endpoints` when you need endpoint-level provider data.
    - Derive free-model lists by filtering zero-priced entries from the model catalog.
    - Store model `id`, not model `name`.
-   - Filter by `architecture.input_modalities` first; use name heuristics only as fallback.
+   - Filter by `architecture.input_modalities` and `architecture.output_modalities` first; use name heuristics only as fallback.
 
 6. Build requests in OpenAI-compatible format.
    - Send text-only prompts as normal chat `messages`.
    - Send images with `content` arrays containing a `text` part and one or more `image_url` parts.
+   - Generate images by sending normal chat `messages` plus `modalities` that include `image`; pass `image_config` when output settings matter.
    - Send PDFs with a `file` content part and, when needed, the `file-parser` plugin.
    - Use public URLs for public assets and data URLs for local or private files.
    - Keep `tools` in every tool-calling request, including follow-up calls that only send tool results.
 
 7. Choose response handling deliberately.
    - For plain prose, read `choices[0].message.content`.
+   - For image generation, read `choices[0].message.images`.
    - For structured data, prefer `response_format: { type: "json_schema", ... }` when the model supports `structured_outputs`.
    - Fall back to `response_format: { type: "json_object" }` when you need JSON but not full schema enforcement.
-   - Use `assets/shared/parse-openrouter-response.ts` for robust text and tool-call extraction.
+   - Use `assets/shared/parse-openrouter-response.ts` for robust text, generated-image, and tool-call extraction.
    - Use `assets/shared/stream-openrouter-sse.ts` for streaming.
    - Use `assets/shared/validate-structured-output.ts` with `zod` for type-safe parsing.
    - Use `assets/nextjs-template/components/openrouter-streaming-chat.tsx` as the end-to-end streaming UI example.
@@ -200,7 +230,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Preserve the original file message and append the annotated assistant message before the next user turn.
 
 9. Verify the integration.
-   - Run `assets/tests/smoke-curl.sh` for text, structured JSON, tools, image, and PDF cases.
+   - Run `assets/tests/smoke-curl.sh` for text, structured JSON, tools, image analysis, image generation, and PDF cases.
    - Run `assets/tests/smoke-catalogs.sh` for models, user models, providers, free-model filtering, and generation cost lookup.
    - Check both successful responses and non-2xx OpenRouter errors.
    - Log returned `usage`, `cost`, finish reason, resolved model id, and generation id for debugging.
@@ -236,7 +266,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 
 - Model discovery, caching, and picker UX: `references/models-and-ui.md`
 - Catalogs, providers, free-model filters, and generation cost lookup: `references/catalogs-and-costs.md`
-- Text, image, and PDF request patterns plus response handling: `references/requests-and-responses.md`
+- Text, image analysis, image generation, and PDF request patterns plus response handling: `references/requests-and-responses.md`
 - Tool calling and agentic loops: `references/tools-and-function-calling.md`
 - Model routing, provider routing, and fallbacks: `references/routing-and-fallbacks.md`
 - Troubleshooting and failure diagnosis: `references/troubleshooting.md`

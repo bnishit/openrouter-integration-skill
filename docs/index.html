@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OpenRouter Skill for AI Agents | Models, Multimodal Chat, Tool Calling</title>
+    <title>OpenRouter Skill for AI Agents | Models, Image Generation, Multimodal Chat</title>
     <meta
       name="description"
-      content="OpenRouter Skill is a reusable OpenRouter agent skill for AI agents that need one practical layer for fast-changing models, providers, multimodal workflows, free-model filtering, generation cost lookup, and production starter templates."
+      content="OpenRouter Skill is a reusable OpenRouter agent skill for AI agents that need one practical layer for fast-changing models, providers, image generation, multimodal workflows, free-model filtering, generation cost lookup, and production starter templates."
     />
     <link rel="canonical" href="https://bnishit.github.io/openrouter-skill/" />
     <meta name="theme-color" content="#0f1728" />
@@ -15,7 +15,7 @@
     <meta property="og:title" content="OpenRouter Skill for AI Agents" />
     <meta
       property="og:description"
-      content="Installable OpenRouter agent skill for AI agents that need model discovery, provider routing, generation cost lookup, multimodal support, and production starter templates."
+      content="Installable OpenRouter agent skill for AI agents that need model discovery, provider routing, image generation, generation cost lookup, multimodal support, and production starter templates."
     />
     <meta property="og:url" content="https://bnishit.github.io/openrouter-skill/" />
     <meta property="og:image" content="https://bnishit.github.io/openrouter-skill/og-preview.png" />
@@ -24,7 +24,7 @@
     <meta name="twitter:title" content="OpenRouter Skill for AI Agents" />
     <meta
       name="twitter:description"
-      content="Reusable OpenRouter agent skill for fast-changing model catalogs, providers, multimodal chat, generation cost lookup, routing, and tool calling."
+      content="Reusable OpenRouter agent skill for fast-changing model catalogs, providers, image generation, multimodal chat, generation cost lookup, routing, and tool calling."
     />
     <meta name="twitter:image" content="https://bnishit.github.io/openrouter-skill/og-preview.png" />
 
@@ -37,7 +37,7 @@
         "name": "OpenRouter Skill",
         "codeRepository": "https://github.com/bnishit/openrouter-skill",
         "url": "https://bnishit.github.io/openrouter-skill/",
-        "description": "OpenRouter agent skill for AI agents that need one reusable layer for models, providers, multimodal flows, generation cost lookup, routing, and starter templates.",
+        "description": "OpenRouter agent skill for AI agents that need one reusable layer for models, providers, image generation, multimodal flows, generation cost lookup, routing, and starter templates.",
         "programmingLanguage": ["Markdown", "TypeScript", "JavaScript", "Python", "Shell"],
         "license": "https://github.com/bnishit/openrouter-skill/blob/main/LICENSE",
         "keywords": ["OpenRouter skill", "OpenRouter agent skill", "OpenRouter integration skill", "multimodal chat", "tool calling"]
@@ -53,7 +53,7 @@
             "name": "What is OpenRouter Skill?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "OpenRouter Skill is a reusable skill for AI agents that need one practical OpenRouter layer for model discovery, provider discovery, free-model filtering, generation cost lookup, multimodal chat, tool calling, routing, and starter templates."
+              "text": "OpenRouter Skill is a reusable skill for AI agents that need one practical OpenRouter layer for model discovery, provider discovery, free-model filtering, image generation, generation cost lookup, multimodal chat, tool calling, routing, and starter templates."
             }
           },
           {
@@ -85,8 +85,8 @@
           <p class="lede">
             When models, providers, modalities, and prices keep changing, agents need more than a
             chat endpoint. This skill gives them one reusable layer for discovery, routing,
-            free-model filtering, generation cost lookup, multimodal flows, and production starter
-            templates.
+            free-model filtering, image generation, generation cost lookup, multimodal flows, and
+            production starter templates.
           </p>
           <div class="cta-row">
             <a class="button primary" href="https://github.com/bnishit/openrouter-skill">View GitHub Repo</a>
@@ -94,7 +94,7 @@
           </div>
           <ul class="signal-list">
             <li>One skill for models, providers, and fast-changing capabilities</li>
-            <li>Use new text, vision, file, and other modality-ready models faster</li>
+            <li>Use new text, vision, image-generation, file, and other modality-ready models faster</li>
             <li>Track exact generation cost instead of guessing from pricing tables</li>
           </ul>
         </div>
@@ -131,8 +131,9 @@
               <span class="principle-index">02</span>
               <h3>Compatibility is the reason teams choose OpenRouter</h3>
               <p>
-                One OpenAI-compatible layer makes it easier to add a new text, vision, file, or
-                future modality-ready model without redesigning the whole integration every time.
+                One OpenAI-compatible layer makes it easier to add a new text, vision,
+                image-generation, file, or future modality-ready model without redesigning the
+                whole integration every time.
               </p>
             </article>
             <article class="principle-card">
@@ -190,6 +191,10 @@
               <p>Text, image, and PDF request patterns with response parsing and streaming helpers.</p>
             </article>
             <article class="capability-card">
+              <h3>Image Generation</h3>
+              <p>OpenRouter chat-completions patterns for generated images, output modalities, and image response parsing.</p>
+            </article>
+            <article class="capability-card">
               <h3>Generation Costs</h3>
               <p>Exact post-hoc generation lookup for cost, provider, and token accounting instead of rough price guesses.</p>
             </article>
@@ -223,16 +228,18 @@
               <div class="chat-bubble user">
                 <strong>Developer</strong>
                 <p>
-                  “A new image-capable model just showed up. I want my agent to add it without
-                  rewriting the app or hardcoding another provider-specific path.”
+                  “A new image-capable model just showed up. I want my agent to add image
+                  generation without rewriting the app or hardcoding another provider-specific
+                  path.”
                 </p>
               </div>
               <div class="chat-bubble agent">
                 <strong>Agent Using This Skill</strong>
                 <p>
                   “I can fetch the live model catalog, filter by the right modalities and
-                  supported parameters, scaffold the route, and keep the integration OpenRouter
-                  compatible instead of pinning your app to one vendor shape.”
+                  supported parameters, pass through image-generation fields, scaffold the route,
+                  and keep the integration OpenRouter compatible instead of pinning your app to one
+                  vendor shape.”
                 </p>
               </div>
               <div class="chat-takeaway">
@@ -284,6 +291,29 @@
                 the same time.
               </div>
             </article>
+
+            <article class="chat-card">
+              <div class="chat-meta">Scenario 4 · One path for text, vision, and generated images</div>
+              <div class="chat-bubble user">
+                <strong>Developer</strong>
+                <p>
+                  “I do not want one SDK for chat, another for images, and a third path for file
+                  workflows. I want one agent-friendly integration that can keep up when new models
+                  appear.”
+                </p>
+              </div>
+              <div class="chat-bubble agent">
+                <strong>Agent Using This Skill</strong>
+                <p>
+                  “I can keep the app on one OpenRouter-compatible layer, add image generation on
+                  the same chat-completions path, and reuse the same model discovery, routing, and
+                  cost-audit patterns across modes.”
+                </p>
+              </div>
+              <div class="chat-takeaway">
+                Useful when the win is operational simplicity, not just one successful request.
+              </div>
+            </article>
           </div>
         </section>
 
@@ -295,16 +325,16 @@
           <div class="narrative-grid">
             <p>
               Teams usually redo the same OpenRouter integration steps every time: choosing a
-              model, comparing providers, checking free options, auditing generation cost,
-              proxying requests, deciding on routing behavior, validating JSON, and wiring up
-              multimodal inputs. OpenRouter Skill bundles those recurring patterns into one
-              installable agent skill.
+              model, comparing providers, checking free options, adding image generation,
+              auditing generation cost, proxying requests, deciding on routing behavior,
+              validating JSON, and wiring up multimodal inputs. OpenRouter Skill bundles those
+              recurring patterns into one installable agent skill.
             </p>
             <p>
               The point is not just to “support OpenRouter.” The point is to let an agent reason
-              about fast-moving model choices, provider tradeoffs, multimodal requests, and cost
-              inspection without rebuilding the same layer from scratch every time a new need shows
-              up.
+              about fast-moving model choices, provider tradeoffs, image generation, multimodal
+              requests, and cost inspection without rebuilding the same layer from scratch every
+              time a new need shows up.
             </p>
           </div>
         </section>
@@ -326,6 +356,10 @@
             <article class="use-case-card">
               <h3>Image and PDF Flows</h3>
               <p>Add image extraction, PDF parsing, and multimodal prompts through a server route.</p>
+            </article>
+            <article class="use-case-card">
+              <h3>Image Generation</h3>
+              <p>Add generated-image workflows through the same OpenRouter chat-completions layer instead of adopting a separate image-only integration.</p>
             </article>
             <article class="use-case-card">
               <h3>Generation Cost Audit</h3>
@@ -368,8 +402,8 @@
               <h3>What do I get besides docs?</h3>
               <p>
                 You get the skill prompt, metadata, starter templates, smoke fixtures, shared
-                helpers, and focused references for models, providers, free-model filtering, and
-                generation cost lookup that agents can use directly.
+                helpers, and focused references for models, providers, free-model filtering, image
+                generation, and generation cost lookup that agents can use directly.
               </p>
             </article>
           </div>

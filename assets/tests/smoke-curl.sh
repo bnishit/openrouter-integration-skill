@@ -10,6 +10,7 @@ Usage:
   smoke-curl.sh tools-followup [model]
   smoke-curl.sh fallback [model]
   smoke-curl.sh image <image-path> [model]
+  smoke-curl.sh image-generation [model]
   smoke-curl.sh pdf <pdf-path> [model]
 
 Environment:
@@ -106,6 +107,10 @@ case "$CASE" in
     esac
     image_data_url="data:${mime_type};base64,$(base64_no_wrap "$image_path")"
     payload=$(json_with_replacements "$FIXTURES_DIR/image-chat.template.json" "__MODEL__=$MODEL" "__IMAGE_DATA_URL__=$image_data_url")
+    ;;
+  image-generation)
+    MODEL=${MODEL:-openai/gpt-image-1}
+    payload=$(json_with_replacements "$FIXTURES_DIR/image-generation.json" "__MODEL__=$MODEL")
     ;;
   pdf)
     pdf_path=${1:-}

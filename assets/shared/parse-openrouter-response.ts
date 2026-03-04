@@ -14,17 +14,26 @@ export type OpenRouterToolCall = {
   };
 };
 
+export type OpenRouterGeneratedImage = {
+  type?: string;
+  image_url?: {
+    url?: string;
+  };
+};
+
 export type OpenRouterChoice = {
   finish_reason?: string | null;
   native_finish_reason?: string | null;
   delta?: {
     content?: unknown;
     tool_calls?: OpenRouterToolCall[];
+    images?: OpenRouterGeneratedImage[];
   };
   message?: {
     role?: string;
     content?: unknown;
     tool_calls?: OpenRouterToolCall[];
+    images?: OpenRouterGeneratedImage[];
   };
 };
 
@@ -71,6 +80,18 @@ export function getToolCalls(response: OpenRouterChatResponse): OpenRouterToolCa
   return choice.message?.tool_calls || choice.delta?.tool_calls || [];
 }
 
+export function getGeneratedImages(response: OpenRouterChatResponse): OpenRouterGeneratedImage[] {
+  const choice = getFirstChoice(response);
+  if (!choice) return [];
+  return choice.message?.images || choice.delta?.images || [];
+}
+
+export function getGeneratedImageUrls(response: OpenRouterChatResponse): string[] {
+  return getGeneratedImages(response)
+    .map((image) => image.image_url?.url || "")
+    .filter(Boolean);
+}
+
 export function parseToolArguments<T>(toolCall: OpenRouterToolCall): T {
   const raw = toolCall.function?.arguments || "{}";
   return JSON.parse(raw) as T;
@@ -82,6 +103,8 @@ export function summarizeResponse(response: OpenRouterChatResponse) {
     id: response.id || null,
     model: response.model || null,
     text: getAssistantText(response),
+    images: getGeneratedImages(response),
+    imageUrls: getGeneratedImageUrls(response),
     toolCalls: getToolCalls(response),
     finishReason: choice?.finish_reason ?? null,
     nativeFinishReason: choice?.native_finish_reason ?? null,
