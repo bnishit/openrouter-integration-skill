@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
-
 :root {
   --bg:         #09090B;
   --bg-card:    #111113;
@@ -8,9 +6,9 @@
   --muted:      #A1A1AA;
   --accent:     #F59E0B;
   --accent-dim: rgba(245, 158, 11, 0.12);
-  --mono:       'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
-  --heading:    'Space Grotesk', system-ui, sans-serif;
-  --body:       'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --mono:       'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Monaco, monospace;
+  --heading:    'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --body:       'Avenir Next', 'Segoe UI Variable', 'Segoe UI', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
