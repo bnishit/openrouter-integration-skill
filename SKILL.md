@@ -184,6 +184,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Do not expose `OPENROUTER_API_KEY` in browser code.
    - Put a server route in front of OpenRouter for model discovery and chat calls.
    - Set `HTTP-Referer` and `X-OpenRouter-Title` headers when the app has a stable URL and title.
+   - Do not forward arbitrary user-supplied `http(s)` asset URLs straight to OpenRouter. Fetch trusted assets server-side and convert them to `data:` URLs, or enforce an explicit host allowlist such as `OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS`.
 
 3. Install a starter instead of retyping boilerplate.
    - Use `scripts/install_template.sh` with `--template nextjs` or `--template express`.
@@ -217,7 +218,7 @@ const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
    - Generate images by sending normal chat `messages` plus `modalities` that include `image`; pass `image_config` when output settings matter.
    - Choose image-output models from the live catalog by checking `architecture.output_modalities` for `image`.
    - Send PDFs with a `file` content part and, when needed, the `file-parser` plugin.
-   - Use public URLs for public assets and data URLs for local or private files.
+   - Default to `data:` URLs for private uploads and for any untrusted remote asset. Use remote `http(s)` URLs only from explicit allowlisted hosts that you control or trust.
    - Keep `tools` in every tool-calling request, including follow-up calls that only send tool results.
 
 7. Choose response handling deliberately.

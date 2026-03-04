@@ -54,7 +54,7 @@ For image analysis, send a user message with a content array. Put the text part 
 }
 ```
 
-Use a public URL instead of a data URL when the image is already publicly accessible.
+Prefer server-generated `data:` URLs for uploads and any untrusted remote asset. Use a remote `http(s)` URL only when the host is explicitly allowlisted and you trust that source not to mutate prompts or content unexpectedly.
 
 ## Image Generation Request
 
@@ -80,7 +80,7 @@ Keep `messages` in the normal OpenAI-compatible format. The key difference is th
 
 ## PDF Request
 
-For PDFs, use a `file` content part. The file may be a public URL or a data URL.
+For PDFs, use a `file` content part. Prefer a `data:` URL by default; allow remote `http(s)` URLs only from explicit trusted hosts.
 
 ```json
 {
@@ -109,7 +109,15 @@ For PDFs, use a `file` content part. The file may be a public URL or a data URL.
 }
 ```
 
-For public PDFs, `file_data` may be a URL. When the selected model supports file input natively, OpenRouter can pass the file directly; otherwise OpenRouter parses it and forwards parsed content to the model.
+If you accept remote PDF URLs, gate them behind a server-side allowlist and log the source host. When the selected model supports file input natively, OpenRouter can pass the file directly; otherwise OpenRouter parses it and forwards parsed content to the model.
+
+## Remote Asset Safety
+
+- Treat remote image and PDF URLs as untrusted input, even when the end user supplied them intentionally.
+- Fetch private or user-uploaded assets server-side and convert them to `data:` URLs before forwarding them to OpenRouter.
+- If you must support remote `http(s)` asset URLs, use a strict host allowlist such as `OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS=cdn.example.com,images.example.com`.
+- Do not let model output or tool output choose a new remote asset URL and then automatically fetch or execute follow-up actions from it without a separate trust check.
+- Log the source host, generation id, and downstream action whenever remote content influenced a tool call or structured output.
 
 ## PDF Engine Guidance
 

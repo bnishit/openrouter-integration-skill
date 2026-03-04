@@ -2,6 +2,71 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+function parseAllowedRemoteAssetHosts(value: string | undefined) {
+  return new Set(
+    (value || "")
+      .split(",")
+      .map((entry) => entry.trim().toLowerCase())
+      .filter(Boolean)
+  );
+}
+
+function isRemoteHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isAllowlistedRemoteAsset(value: string, allowedHosts: Set<string>) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return false;
+    }
+    return allowedHosts.has(url.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
+function collectRemoteAssetViolations(
+  input: unknown,
+  allowedHosts: Set<string>,
+  path = "messages",
+  violations: string[] = []
+): string[] {
+  if (Array.isArray(input)) {
+    input.forEach((value, index) => {
+      collectRemoteAssetViolations(value, allowedHosts, `${path}[${index}]`, violations);
+    });
+    return violations;
+  }
+
+  if (!input || typeof input !== "object") {
+    return violations;
+  }
+
+  const record = input as Record<string, unknown>;
+  const imageUrl = (record.image_url as Record<string, unknown> | undefined)?.url;
+  if (typeof imageUrl === "string" && isRemoteHttpUrl(imageUrl) && !isAllowlistedRemoteAsset(imageUrl, allowedHosts)) {
+    violations.push(`${path}.image_url.url -> ${imageUrl}`);
+  }
+
+  const fileData = (record.file as Record<string, unknown> | undefined)?.file_data;
+  if (typeof fileData === "string" && isRemoteHttpUrl(fileData) && !isAllowlistedRemoteAsset(fileData, allowedHosts)) {
+    violations.push(`${path}.file.file_data -> ${fileData}`);
+  }
+
+  for (const [key, value] of Object.entries(record)) {
+    collectRemoteAssetViolations(value, allowedHosts, `${path}.${key}`, violations);
+  }
+
+  return violations;
+}
+
 type ProxyBody = {
   model?: string;
   models?: string[];
@@ -29,6 +94,25 @@ export async function POST(req: NextRequest) {
 
     if (!body.messages?.length) {
       return NextResponse.json({ error: "messages is required" }, { status: 400 });
+    }
+
+    const allowedRemoteAssetHosts = parseAllowedRemoteAssetHosts(
+      process.env.OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS
+    );
+    const remoteAssetViolations = collectRemoteAssetViolations(
+      body.messages,
+      allowedRemoteAssetHosts
+    );
+
+    if (remoteAssetViolations.length > 0) {
+      return NextResponse.json(
+        {
+          error:
+            "Remote asset URLs must be converted to data URLs server-side or come from an allowlisted host in OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS.",
+          details: remoteAssetViolations,
+        },
+        { status: 400 }
+      );
     }
 
     const payload = {

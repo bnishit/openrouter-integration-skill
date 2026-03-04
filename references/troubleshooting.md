@@ -34,7 +34,7 @@ Symptoms:
 Checks:
 - Ensure `model` and `messages` are present.
 - For multimodal calls, ensure `content` is an array and each part has the expected shape.
-- For images, use `image_url.url` with either a public URL or a `data:` URL.
+- For images, prefer `image_url.url` with a `data:` URL; use remote `http(s)` URLs only from explicit allowlisted hosts.
 - For PDFs, use a `file` part with `filename` and `file_data`.
 
 ## Structured Output Fails Or Returns Loose JSON

@@ -6,6 +6,69 @@ const CACHE_MS = 60 * 60 * 1000;
 let modelsCache = null;
 let providersCache = null;
 
+function parseAllowedRemoteAssetHosts(value) {
+  return new Set(
+    String(value || "")
+      .split(",")
+      .map((entry) => entry.trim().toLowerCase())
+      .filter(Boolean)
+  );
+}
+
+function isRemoteHttpUrl(value) {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isAllowlistedRemoteAsset(value, allowedHosts) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return false;
+    }
+    return allowedHosts.has(url.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
+function collectRemoteAssetViolations(input, allowedHosts, path = "messages", violations = []) {
+  if (Array.isArray(input)) {
+    input.forEach((value, index) => {
+      collectRemoteAssetViolations(value, allowedHosts, `${path}[${index}]`, violations);
+    });
+    return violations;
+  }
+
+  if (!input || typeof input !== "object") {
+    return violations;
+  }
+
+  const imageUrl = input.image_url?.url;
+  if (typeof imageUrl === "string" && isRemoteHttpUrl(imageUrl) && !isAllowlistedRemoteAsset(imageUrl, allowedHosts)) {
+    violations.push(`${path}.image_url.url -> ${imageUrl}`);
+  }
+
+  const fileData = input.file?.file_data;
+  if (typeof fileData === "string" && isRemoteHttpUrl(fileData) && !isAllowlistedRemoteAsset(fileData, allowedHosts)) {
+    violations.push(`${path}.file.file_data -> ${fileData}`);
+  }
+
+  for (const [key, value] of Object.entries(input)) {
+    collectRemoteAssetViolations(value, allowedHosts, `${path}.${key}`, violations);
+  }
+
+  return violations;
+}
+
 function providerFromId(id) {
   return id.split("/")[0] || "unknown";
 }
@@ -221,6 +284,19 @@ openrouterRouter.post("/chat", async (req, res) => {
 
     if (!Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: "messages is required" });
+    }
+
+    const allowedRemoteAssetHosts = parseAllowedRemoteAssetHosts(
+      process.env.OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS
+    );
+    const remoteAssetViolations = collectRemoteAssetViolations(messages, allowedRemoteAssetHosts);
+
+    if (remoteAssetViolations.length > 0) {
+      return res.status(400).json({
+        error:
+          "Remote asset URLs must be converted to data URLs server-side or come from an allowlisted host in OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS.",
+        details: remoteAssetViolations,
+      });
     }
 
     const payload = {

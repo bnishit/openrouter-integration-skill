@@ -40,6 +40,7 @@ OpenRouter moves faster than app code usually does. New models appear quickly, p
 - **Production Playbooks** — built-in rules for routing, observability, structured output, logging, and audit
 - **Asset Workflows** — starter patterns for icons, OG images, social visuals, and persistent asset metadata
 - **Starter Templates** — reusable Next.js and Express routes plus a small ops/debug surface
+- **Safer Defaults** — starter proxies reject arbitrary remote image/PDF URLs unless you explicitly allowlist trusted hosts
 - **Verification** — smoke fixtures, docs checks, and shared helpers for safer integration changes
 
 ## Example Prompts
@@ -122,6 +123,8 @@ The feature is working, but you don't want to remember all the small rules for f
 - `assets/nextjs-template/components/openrouter-image-workbench.tsx`: starter UI for generating, previewing, and downloading image assets
 - `assets/nextjs-template/app/openrouter-image-lab/page.tsx`: sample page for image generation after install
 - `assets/tests/smoke-catalogs.sh`: smoke script for `/models`, `/models/user`, `/providers`, free-model filtering, image-output model discovery, and `/generation`
+
+The starter proxies default to `data:` URLs for uploaded assets and block arbitrary remote `http(s)` image/PDF URLs unless you set `OPENROUTER_ALLOWED_REMOTE_ASSET_HOSTS`.
 
 ## Best-Practice Playbooks
 
